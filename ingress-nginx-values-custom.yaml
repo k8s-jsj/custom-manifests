@@ -1,0 +1,35 @@
+controller:
+  image:
+    image: ingress-nginx/controller
+    tag: "v1.13.4"
+
+  service:
+    type: ClusterIP
+    externalIPs:
+      - 192.168.137.10
+
+  ingressClassResource:
+    name: nginx
+    default: true
+
+  extraEnvs:
+    - name: TZ
+      value: Asia/Seoul
+
+  replicaCount: 1
+  nodeSelector:
+    kubernetes.io/hostname: master-1
+
+  tolerations:
+    - key: "node-role.kubernetes.io/control-plane"
+      operator: "Exists"
+      effect: "NoSchedule"
+
+  admissionWebhooks:
+    patch:
+      nodeSelector:
+        kubernetes.io/hostname: master-1
+      tolerations:
+        - key: "node-role.kubernetes.io/control-plane"
+          operator: "Exists"
+          effect: "NoSchedule"
